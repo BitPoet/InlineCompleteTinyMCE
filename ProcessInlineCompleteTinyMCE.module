@@ -24,7 +24,7 @@ class ProcessInlineCompleteTinyMCE extends Process implements ConfigurableModule
 		return [
 			"title"			=>	"Autocomplete for TinyMCE",
 			"summary"		=>	"Allow quick insertion of PW items inside TinyMCE",
-			"version"		=>	"0.0.1",
+			"version"		=>	"0.0.3",
 			"autoload"		=>	function() {
 				$p = wire('page');
 				if(! $p->template == "admin") return false;
@@ -35,7 +35,7 @@ class ProcessInlineCompleteTinyMCE extends Process implements ConfigurableModule
 				"InlineCompleteTinyMCEAction"
 			],
 			"page"			=>	[
-				"name"			=>	"inlinecomplete",
+				"name"			=>	"icompletetinymce",
 				"title"			=>	"TinyMCE Inline Complete",
 				"status"		=>	"hidden"
 			]
@@ -214,7 +214,7 @@ class ProcessInlineCompleteTinyMCE extends Process implements ConfigurableModule
 		$actions = [];
 
 		$defaultConf = [
-			"url"				=>		$this->pages->get("template=admin, name=inlinecomplete")->url,
+			"url"				=>		$this->pages->get("template=admin, name=icompletetinymce")->url,
 			"name"				=>		$fname,
 			"page"				=>		(int)$this->input->get->id
 		];

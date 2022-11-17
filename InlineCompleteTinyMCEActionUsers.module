@@ -19,7 +19,7 @@ class InlineCompleteTinyMCEActionUsers extends InlineCompleteTinyMCEAction {
 		return array(
 			"title"		=>	"Autocomplete for Users",
 			"summary"	=>	"Add action for PW users to Autocomplete for TinyMCE",
-			"version"	=>	"0.0.1",
+			"version"	=>	"0.0.2",
 			"autoload"	=>	function() {
 				$p = wire('page');
 				if($p->template != "admin") return false;
@@ -57,8 +57,6 @@ class InlineCompleteTinyMCEActionUsers extends InlineCompleteTinyMCEAction {
 		foreach($users as $usr) {
 			
 			if($this->showUserImage) {
-				
-				$this->log(sprintf('Configured to show user image, used field is %s, url is %s', $this->userImageField, $usr->getUnformatted($this->userImageField)->first()->url));
 				
 				$ret[] = [
 					'type'		=>	'cardmenuitem',

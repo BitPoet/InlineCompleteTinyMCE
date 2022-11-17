@@ -1,0 +1,104 @@
+<?php namespace ProcessWire;
+
+/**
+ *
+ * Action for ProcessInlineCompleteTinyMCE that returns a list of pages
+ * matching a given selector
+ *
+ * This module is a supplement for ProcessInlineCompleteTinyMCE.
+ *
+ * (c) 2022 by BitPoet https://github.com/bitpoet
+ *
+ * Released under MIT license 
+ *
+ */
+
+
+class InlineCompleteTinyMCEActionPages extends InlineCompleteTinyMCEAction {
+	
+	public static function getModuleInfo() {
+		
+		return array(
+			"title"		=>	"Autocomplete for Pages",
+			"summary"	=>	"Add action for pages matching selector to Autocomplete for TinyMCE",
+			"version"	=>	"0.0.2",
+			"autoload"	=>	function() {
+				$p = wire('page');
+				if($p->template != "admin") return false;
+				if($p->process === "ProcessPageEdit" || $p->process === "ProcessField" || $p->process === "ProcessInlineCompleteTinyMCE") {
+					return true;
+				}
+				return false;
+			},
+			"requires"	=>	array(
+				"ProcessInlineCompleteTinyMCE",
+				"InlineCompleteTinyMCEAction"
+			)
+		);
+	}
+
+	public function init() {
+		parent::init();
+		$this->set('trigger', '~');
+		$this->set('resultTpl', "{name}");
+		$this->set('insertTpl', '{value}');
+	}
+
+
+	public function executeFilter($options) {
+
+		$ret = [];
+
+		$selector = str_replace('{filter}', $this->sanitizer->selectorValue($options->filter), $this->selector);
+		
+		$res = $this->pages->find($selector . ", limit={$this->limit}");
+		
+		foreach($res as $pg) {
+			
+			$ret[] = array(
+				"type"	=>	"autocompleteitem",
+				"text"	=>	$this->fillTpl($this->get('resultTpl'), $pg),
+				"value"	=>	$this->fillTpl($this->get('insertTpl'), $pg)
+			);
+
+		}
+		
+		return $ret;
+	}
+
+
+	public function ___getActionSettings() {
+
+		$settings = [
+			"typeAheadAfter"		=>	$this->trigger,
+		];
+		return array_merge($settings, parent::___getActionSettings());
+		
+	}
+
+	/**
+	 *
+	 * Configuration fields
+	 *
+	 */
+	public function ___getSettingsFields($field, $prefix) {
+		$wrap = parent::___getSettingsFields($field, $prefix);
+		
+		$f = $this->modules->get('InputfieldText');
+		$f->attr('name', 'trigger');
+		$f->label = $this->_("Trigger characters for autocompleter");
+		$wrap->append($f);
+		
+		$f = $this->modules->get('InputfieldSelector');
+		$f->attr('name', 'selector');
+		$f->label = $this->_("Selector for pages");
+		$f->description = $this->_("Enter {filter} in the selector value that you want to match the autocomplete input");
+		$f->allowSystemTemplates = true;
+		$f->showFieldLabels = true;
+		$wrap->append($f);
+		
+		return $wrap;
+	}
+
+	
+}

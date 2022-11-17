@@ -19,7 +19,7 @@ class InlineCompleteTinyMCEActionHannaCode extends InlineCompleteTinyMCEAction {
 		return array(
 			"title"		=>	"Autocomplete for Hanna Code",
 			"summary"	=>	"Add action for Hanna Code to Autocomplete for TinyMCE",
-			"version"	=>	"0.0.1",
+			"version"	=>	"0.0.2",
 			"autoload"	=>	function() {
 				$p = wire('page');
 				if($p->template != "admin") return false;
@@ -81,10 +81,8 @@ class InlineCompleteTinyMCEActionHannaCode extends InlineCompleteTinyMCEAction {
 		$match = [];
 		
 		if(preg_match('~/\\*hc_attr\r?\n(.*?)hc_attr\\*/~s', $code, $match)) {
-			$this->log->message(sprintf("Extracting attributes from %s", $match[1]));
 			$lines = preg_split('/\r?\n/', $match[1], 0, \PREG_SPLIT_NO_EMPTY);
 			foreach($lines as $line) {
-				$this->log->message(sprintf("Parsing line %s", $line));
 				trim($line);
 				list($name, $value) = explode('=', $line, 2);
 				$value = trim($value, '"');
