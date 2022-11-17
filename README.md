@@ -18,6 +18,9 @@ The module ships with two pre-built actions:
 - InlineCompleteTinyMCEActionUsers
   Add links to user profiles or user emails by typing "@" and the starting letters of the user's name, then select from the list.
   By default, a plain list is shown, but you can optionally enable profile pictures in the list.
+- InlineCompleteTinyMCEActionPages
+  Configure a selector in the field settings. The autocompleter then retrieves a list of pages matching the selector (use {filter} as a placeholder).
+  You can also configure the trigger character.
 
 You can program your own action modules. They need to inherit from InlineCompleteTinyMCEAction and implement the following methods:
 - init()
@@ -33,6 +36,7 @@ You can program your own action modules. They need to inherit from InlineComplet
 
 # ToDo
 - Make the autocomplete trigger sequence configurable in module and/or field settings
+- Allow multiple autocompleters in InlineCompleteTinyMCEActionPages
 - Remove old baggage in the code that was taken over from ProcessCKInlineComplete
 - Finish the documentation
 - Do more testing.
