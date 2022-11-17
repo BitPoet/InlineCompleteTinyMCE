@@ -19,7 +19,7 @@ class InlineCompleteTinyMCEActionUsers extends InlineCompleteTinyMCEAction {
 		return array(
 			"title"		=>	"Autocomplete for Users",
 			"summary"	=>	"Add action for PW users to Autocomplete for TinyMCE",
-			"version"	=>	"0.0.2",
+			"version"	=>	"0.0.3",
 			"autoload"	=>	function() {
 				$p = wire('page');
 				if($p->template != "admin") return false;
@@ -38,6 +38,7 @@ class InlineCompleteTinyMCEActionUsers extends InlineCompleteTinyMCEAction {
 	
 	public function init() {
 		parent::init();
+		$this->set('trigger', '@');
 		$this->set("resultTpl", "{name} [{email}]");
 		$this->set("insertTpl", "<a class='inlineuser' href='mailto:{email}'>@{name}</a>");
 		$this->set("userfields", []);
@@ -97,17 +98,18 @@ class InlineCompleteTinyMCEActionUsers extends InlineCompleteTinyMCEAction {
 	 */
 	public function ___getActionSettings() {
 		return array(
-			"typeAheadChar"			=>	"@",
-			"typeAheadAfter"		=>	"@",
-			"ddLabel"				=>	$this->_("Select User:"),
-			"returnColumns"			=>	["name","email","url"],
-			"isText"				=>	false,
+			"typeAheadAfter"		=>	$this->trigger,
 		);
 	}
 
 	public function ___getSettingsFields($field, $prefix) {
 		
 		$wrap = parent::___getSettingsFields($field, $prefix);
+		
+		$f = $this->modules->get('InputfieldText');
+		$f->attr('name', 'trigger');
+		$f->label = $this->_("Trigger characters for autocompleter");
+		$wrap->append($f);
 		
 		$ut = $this->templates->get("user");
 		

@@ -19,7 +19,7 @@ class InlineCompleteTinyMCEActionHannaCode extends InlineCompleteTinyMCEAction {
 		return array(
 			"title"		=>	"Autocomplete for Hanna Code",
 			"summary"	=>	"Add action for Hanna Code to Autocomplete for TinyMCE",
-			"version"	=>	"0.0.2",
+			"version"	=>	"0.0.3",
 			"autoload"	=>	function() {
 				$p = wire('page');
 				if($p->template != "admin") return false;
@@ -96,21 +96,16 @@ class InlineCompleteTinyMCEActionHannaCode extends InlineCompleteTinyMCEAction {
 	
 	/**
 	 *
-	 * We open the Hanna Code picker with the first square bracket but only
-	 * use the text after two consecutive brackets as the search pattern.
+	 * We open the Hanna Code picker with the openTag configured in Hanna
 	 *
 	 */
 	public function ___getActionSettings() {
 
 		$hanna = $this->modules->get('TextformatterHannaCode');
 
-		$settings = array(
-			"typeAheadChar"			=>	substr($hanna->openTag, 0, 1),
+		$settings = [
 			"typeAheadAfter"		=>	$hanna->openTag,
-			"ddLabel"				=>	$this->_("Select Hanna Code:"),
-			"returnColumns"			=>	["name","value"],
-			"isText"				=>	true
-		);
+		];
 		return array_merge($settings, parent::___getActionSettings());
 	}
 	

@@ -92,11 +92,6 @@ class InlineCompleteTinyMCEAction extends WireData implements Module {
 			// same as typeAheadChar the most time, but it may differ for
 			// multi-letter starting strings like with Hanna Codes ("[[")
 			//"typeAheadAfter"	=>	"~~",
-			
-			// Must be set if your insert template is plain text and not a
-			// valid HTML element, otherwise the plugin.js will throw an
-			// an error and fail to insert the result
-			"isText"		=>	true,
 		);
 	}
 	

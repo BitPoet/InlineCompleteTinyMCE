@@ -21,7 +21,7 @@ class InlineCompleteTinyMCEActionPages extends InlineCompleteTinyMCEAction {
 		return array(
 			"title"		=>	"Autocomplete for Pages",
 			"summary"	=>	"Add action for pages matching selector to Autocomplete for TinyMCE",
-			"version"	=>	"0.0.2",
+			"version"	=>	"0.0.3",
 			"autoload"	=>	function() {
 				$p = wire('page');
 				if($p->template != "admin") return false;
