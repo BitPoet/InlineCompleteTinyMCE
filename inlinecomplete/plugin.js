@@ -4,12 +4,10 @@ jQuery(document).ready(function() {
 		
 		var fieldname = editor.id.replace('Inputfield_', '');
 		var config = ProcessWire.config['InputfieldTinyMCE_' + fieldname].inlinecomplete;
-		console.dir(config);
 		
 		for(var i = 0, l = config.actions.length; i < l; i++) {
 			
 			var autocompleteConfig = InlineCompleteHandler(editor, config, config.actions[i]);
-			console.dir(autocompleteConfig);
     		editor.ui.registry.addAutocompleter(fieldname + '_autocomplete' + i, autocompleteConfig);
     		
     	}
