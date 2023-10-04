@@ -23,15 +23,16 @@ The module ships with two pre-built actions:
   You can also configure the trigger character. If you have image fields on selectable pages, you can enable preview images and select which image fields should
   be used as the source for the preview image. The first image found will be included in the dropdown as a thumbnail.
 
+# For Developers
 You can program your own action modules. They need to inherit from InlineCompleteTinyMCEAction and implement the following methods:
-- init()
+- init()  
   This init method needs to call parent::init() and set the default values for resultTpl (the text to be shown in the autocomplete result list) and insertTpl (the actual text or HTML to insert in the editor), as well as any additional configuration fields you implement.
-- ___getActionSettings()
+- ___getActionSettings()  
   Needs to return an associative array with the following fields:
   "typeAheadAfter": the sequence that triggers this autocompleter
-- executeFilter($options)
+- executeFilter($options)  
   This method does the searching. The string to search for is available in $options->filter. The returned value, when converted to JSON, must be valid for the [TinyMCE autocompleter](https://www.tiny.cloud/docs/tinymce/6/autocompleter/).
-- ___getSettingsFields($field, $prefix)
+- ___getSettingsFields($field, $prefix)  
   Hookable method that returns any additional configurations for the autocompleter in the field's configuration screen.
   The wrapper element for the fields has to be retrieved by calling ```$wrap = parent::___getSettingsFields($field, $prefix);```. The returned wrapper is then included in InputfieldTinyMCE::getConfigInputfields() and can be changed in the field's Input tab.
 
