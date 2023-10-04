@@ -2,7 +2,7 @@
 ProcessWire Autocomplete Module for InputfieldTinyMCE
 
 # Status
-Alpha - please use with caution and only on Systems where you don't mind issues
+Beta - please use with caution
 
 # Compatibility
 Requires ProcessWire >= 3.0.200 and InputfieldTinyMCE
@@ -13,14 +13,15 @@ This module adds autocomplete capabilities to InputfieldTinyMCE.
 You can have multiple autocompleters in one editor. Each autocompleter is called an "action" in the context of this module.
 
 The module ships with two pre-built actions:
-- InlineCompleteTinyMCEActionHannaCode
+- **InlineCompleteTinyMCEActionHannaCode:**
   Autocomplete for Hanna Codes configured in this system, start typing "[[" followed by the starting letters of the Hanna Code, then select from the list.
-- InlineCompleteTinyMCEActionUsers
+- **InlineCompleteTinyMCEActionUsers:**
   Add links to user profiles or user emails by typing "@" and the starting letters of the user's name, then select from the list.
   By default, a plain list is shown, but you can optionally enable profile pictures in the list.
-- InlineCompleteTinyMCEActionPages
-  Configure a selector in the field settings. The autocompleter then retrieves a list of pages matching the selector (use {filter} as a placeholder).
-  You can also configure the trigger character.
+- **InlineCompleteTinyMCEActionPages**
+  Configure a pages selector in the field settings. The autocompleter then retrieves a list of pages matching the selector (use {filter} as a placeholder).
+  You can also configure the trigger character. If you have image fields on selectable pages, you can enable preview images and select which image fields should
+  be used as the source for the preview image. The first image found will be included in the dropdown as a thumbnail.
 
 You can program your own action modules. They need to inherit from InlineCompleteTinyMCEAction and implement the following methods:
 - init()
@@ -37,9 +38,7 @@ You can program your own action modules. They need to inherit from InlineComplet
 # ToDo
 - Make the autocomplete trigger sequence configurable in module and/or field settings
 - Allow multiple autocompleters in InlineCompleteTinyMCEActionPages
-- Remove old baggage in the code that was taken over from ProcessCKInlineComplete
 - Finish the documentation
-- Do more testing.
 
 # License
 
