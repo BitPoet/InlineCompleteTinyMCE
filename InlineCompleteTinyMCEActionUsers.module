@@ -19,7 +19,7 @@ class InlineCompleteTinyMCEActionUsers extends InlineCompleteTinyMCEAction {
 		return array(
 			"title"		=>	"Autocomplete for Users",
 			"summary"	=>	"Add action for PW users to Autocomplete for TinyMCE",
-			"version"	=>	"0.0.3",
+			"version"	=>	"0.0.4",
 			"autoload"	=>	function() {
 				$p = wire('page');
 				if($p->template != "admin") return false;

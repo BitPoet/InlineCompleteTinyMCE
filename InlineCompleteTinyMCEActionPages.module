@@ -21,7 +21,7 @@ class InlineCompleteTinyMCEActionPages extends InlineCompleteTinyMCEAction {
 		return array(
 			"title"		=>	"Autocomplete for Pages",
 			"summary"	=>	"Add action for pages matching selector to Autocomplete for TinyMCE",
-			"version"	=>	"0.0.3",
+			"version"	=>	"0.0.4",
 			"autoload"	=>	function() {
 				$p = wire('page');
 				if($p->template != "admin") return false;
@@ -55,15 +55,59 @@ class InlineCompleteTinyMCEActionPages extends InlineCompleteTinyMCEAction {
 		
 		foreach($res as $pg) {
 			
-			$ret[] = array(
-				"type"	=>	"autocompleteitem",
-				"text"	=>	$this->fillTpl($this->get('resultTpl'), $pg),
-				"value"	=>	$this->fillTpl($this->get('insertTpl'), $pg)
-			);
+			if($this->showPageImage) {
+				
+				$ret[] = [
+					'type'		=>	'cardmenuitem',
+					"label"		=>	$this->fillTpl($this->get('resultTpl'), $pg),
+					"value"		=>	$this->fillTpl($this->get('insertTpl'), $pg),
+					'items'		=>	[[
+						'type'		=>	'cardimage',
+						'src'		=>	$this->tryGetPageImage($pg),
+						'classes'	=>	['icua-image']
+					], [
+						'type'		=>	'cardtext',
+						'text'		=>	$this->fillTpl($this->get('resultTpl'), $pg)
+					]]
+				];
+				
+				
+			} else {
+				
+				$ret[] = array(
+					"type"	=>	"autocompleteitem",
+					"text"	=>	$this->fillTpl($this->get('resultTpl'), $pg),
+					"value"	=>	$this->fillTpl($this->get('insertTpl'), $pg)
+				);
+								
+			}
 
 		}
 		
 		return $ret;
+	}
+
+
+	protected function tryGetPageImage($obj) {
+		
+		foreach($this->pageImageField as $fld) {
+			
+			if($obj->template->hasField($fld)) {
+			
+				$imgfld = $obj->getUnformatted($fld);
+				
+				if($imgfld && $imgfld->count()) {
+					
+					return $imgfld->first()->url;
+					
+				}
+				
+			}
+			
+		}
+		
+		return '';
+		
 	}
 
 
@@ -97,6 +141,35 @@ class InlineCompleteTinyMCEActionPages extends InlineCompleteTinyMCEAction {
 		$f->showFieldLabels = true;
 		$wrap->append($f);
 		
+		$f = $this->modules->get("InputfieldCheckbox");
+		$f->label = $this->_("Show preview image");
+		$f->attr("name", "showPageImage");
+		$f->checkedValue = "1";
+		$wrap->add($f);
+		
+		
+		// Retrieve all image fields and add them to select
+		$flds = [];
+		foreach($this->fields as $fld) {
+			if($fld->type instanceof FieldtypeImage) {
+				$flds[$fld->name] = $fld->label ?: $fld->name;
+			}
+		}
+		
+		$f = $this->modules->get("InputfieldAsmSelect");
+		$f->label = $this->_("Image fields to use");
+		$f->description = $this->_("You can add different image fields here since your search might return pages with different templates");
+		$f->notes = $this->_("Image fields are tried in the order they are listed here");
+		$f->attr("name", "pageImageField");
+		$f->showIf = "showPageImage=1";
+		foreach($flds as $v => $l) {
+			$attrs = [];
+			if($v === $this->pageImageField)
+				$attrs['selected'] = 'selected';
+			$f->addOption($v, $l, $attrs);
+		}
+		$f->attr('value', $this->pageImageField);
+		$wrap->add($f);
 		return $wrap;
 	}
 

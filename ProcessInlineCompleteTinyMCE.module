@@ -24,7 +24,7 @@ class ProcessInlineCompleteTinyMCE extends Process implements ConfigurableModule
 		return [
 			"title"			=>	"Autocomplete for TinyMCE",
 			"summary"		=>	"Allow quick insertion of PW items inside TinyMCE",
-			"version"		=>	"0.0.3",
+			"version"		=>	"0.0.4",
 			"autoload"		=>	function() {
 				$p = wire('page');
 				if(! $p->template == "admin") return false;
@@ -36,8 +36,8 @@ class ProcessInlineCompleteTinyMCE extends Process implements ConfigurableModule
 			],
 			"page"			=>	[
 				"name"			=>	"icompletetinymce",
-				"title"			=>	"TinyMCE Inline Complete",
-				"status"		=>	"hidden"
+				"parent"		=>	"setup",
+				"title"			=>	"TinyMCE Inline Complete"
 			]
 		];
 	}	
@@ -118,9 +118,49 @@ class ProcessInlineCompleteTinyMCE extends Process implements ConfigurableModule
 	 */
 	public function ___execute() {
 		
-		if(! $this->config->ajax) {
-			return "<p>" . $this->_("This page acts as an AJAX-only interface for the Autocomplete module") . "</p>";
+		if($this->config->ajax) {
+			return $this->executeAjax();
 		}
+		
+		$tbl = $this->modules->get("MarkupAdminDataTable");
+		if(count($this->actions) == 0) $this->actions = $this->registerActions();
+		
+		$tbl->headerRow([
+			$this->_("Action"),
+			$this->_("Trigger"),
+			$this->_("Activated for fields")
+		]);
+		
+		foreach($this->actions as $action) {
+			
+			$actionTitle = str_replace("InlineCompleteTinyMCEAction", "", $action->className);
+			$usedIn = [];
+			
+			foreach($this->fields as $fld) {
+				$this->log->save('inlinecomplete', sprintf('Checking if field %s is an InputfieldTinyMCE', $fld->name));
+				if($fld->type instanceof FieldtypeTextarea && $fld->inputfieldClass === 'InputfieldTinyMCE') {
+					$prefix = $fld->name . "__" . $action->name . "__";
+					if($fld->{$prefix . 'useAction'}) {
+						$usedIn[] = $fld->label ?: $fld->name;
+					}
+				} else {
+					$this->log->save('inlinecomplete', sprintf('Not TinyMCE: %s (Type = %s)', $fld->name, $fld->type->className));
+				}
+			}
+			
+			$tbl->row([
+				$actionTitle,
+				$action->getTrigger(),
+				implode(', ', $usedIn)
+			]);
+		}
+		
+		$hdr = '<h3>' . $this->_("Available Actions:") . '</h3>';
+		
+		return $hdr . $tbl->render();
+	}
+	
+	protected function executeAjax() {
 		
 		if(count($this->actions) == 0) $this->actions = $this->registerActions();
 
@@ -128,18 +168,20 @@ class ProcessInlineCompleteTinyMCE extends Process implements ConfigurableModule
 		
 		$ret = [];
 		
-		$get = $this->input->get;
+		$params = $this->input->get;
+		if(! $params->action)
+			$params = $this->input->post;
 		
-		if(! $get->action || ! $get->page || ! $get->field || ! $get->filter) {
+		if(! $params->action || ! $params->page || ! $params->field || ! $params->filter) {
 			$this->log->error(sprintf($this->_("Missing GET parameters for %s::execute"), $this->className));
 			echo json_encode($ret);
 			return;
 		}
 		
-		$pageId = (int)$this->input->get->page;
+		$pageId = (int)$params->page;
 		$editPage = $this->pages->get($pageId);
-		$fieldName = $this->sanitizer->fieldName($get->field);
-		$actionName = $this->sanitizer->name($get->action);
+		$fieldName = $this->sanitizer->fieldName($params->field);
+		$actionName = $this->sanitizer->name($params->action);
 		
 		if($editPage instanceof NullPage) {
 			$err = sprintf($this->_("Invalid page %d"), $pageId);
@@ -193,7 +235,7 @@ class ProcessInlineCompleteTinyMCE extends Process implements ConfigurableModule
 			}
 		}
 
-		$ret = $action->executeFilter($get);
+		$ret = $action->executeFilter($params);
 		
 		echo json_encode($ret, \JSON_PRETTY_PRINT);
 	}

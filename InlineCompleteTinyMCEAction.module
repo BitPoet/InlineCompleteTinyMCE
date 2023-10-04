@@ -40,6 +40,21 @@ class InlineCompleteTinyMCEAction extends WireData implements Module {
 	}
 	
 	/**
+	 * Get the trigger character.
+	 *
+	 * You can override this method in action implementations if the action
+	 * doesn't have a configurable trigger. This is e.g. the case for the
+	 * HannaCode action, where the trigger character is the same as the
+	 * open tag configured in Hanna Code settings.
+	 *
+	 */
+	public function getTrigger() {
+		
+		return $this->trigger;
+		
+	}
+	
+	/**
 	 *
 	 * Simply add this instance to the return of ProcessInlineCompleteTinyMCE
 	 *
