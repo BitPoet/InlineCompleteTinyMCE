@@ -32,12 +32,12 @@ You can program your own action modules. They need to inherit from InlineComplet
   "typeAheadAfter": the sequence that triggers this autocompleter
 - executeFilter($options)  
   This method does the searching. The string to search for is available in $options->filter. The returned value, when converted to JSON, must be valid for the [TinyMCE autocompleter](https://www.tiny.cloud/docs/tinymce/6/autocompleter/).
+  If you have a multi language TinyMCE field, you can pull the id of the language being edited from $options->language and adjust your filter accordingly. You can see an example for that in InlineCompleteTinyMCEActionPages.
 - ___getSettingsFields($field, $prefix)  
   Hookable method that returns any additional configurations for the autocompleter in the field's configuration screen.
   The wrapper element for the fields has to be retrieved by calling ```$wrap = parent::___getSettingsFields($field, $prefix);```. The returned wrapper is then included in InputfieldTinyMCE::getConfigInputfields() and can be changed in the field's Input tab.
 
 # ToDo
-- Make the autocomplete trigger sequence configurable in module and/or field settings
 - Allow multiple autocompleters in InlineCompleteTinyMCEActionPages
 - Finish the documentation
 
