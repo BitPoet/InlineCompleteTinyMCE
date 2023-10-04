@@ -19,7 +19,7 @@ class InlineCompleteTinyMCEActionHannaCode extends InlineCompleteTinyMCEAction {
 		return array(
 			"title"		=>	"Autocomplete for Hanna Code",
 			"summary"	=>	"Add action for Hanna Code to Autocomplete for TinyMCE",
-			"version"	=>	"0.0.4",
+			"version"	=>	"0.0.5",
 			"autoload"	=>	function() {
 				$p = wire('page');
 				if($p->template != "admin") return false;

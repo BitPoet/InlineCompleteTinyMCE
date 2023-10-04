@@ -8,7 +8,7 @@ class InlineCompleteTinyMCEAction extends WireData implements Module {
 		return array(
 			"title"		=>	"Autocomplete Action Base Class",
 			"summary"	=>	"Base class for actions for ProcessInlineCompleteTinyMCE",
-			"version"	=>	"0.0.2",
+			"version"	=>	"0.0.5",
 			"autoload"	=>	function() {
 				$p = wire('page');
 				if($p->template != "admin") return false;
@@ -43,9 +43,14 @@ class InlineCompleteTinyMCEAction extends WireData implements Module {
 	 * Get the trigger character.
 	 *
 	 * You can override this method in action implementations if the action
-	 * doesn't have a configurable trigger. This is e.g. the case for the
-	 * HannaCode action, where the trigger character is the same as the
-	 * open tag configured in Hanna Code settings.
+	 * doesn't have a configurable trigger like the HannaCode action does,
+	 * where the trigger character is the same as the open tag configured
+	 * in Hanna Code settings.
+	 *
+	 * If your implementation supports multiple triggers, you can return
+	 * an array here. Your module needs to evaluate the post parameter
+	 * "trigger" in that case to determine which trigger routine it should
+	 * execute.
 	 *
 	 */
 	public function getTrigger() {
@@ -110,7 +115,6 @@ class InlineCompleteTinyMCEAction extends WireData implements Module {
 		);
 	}
 	
-
 	/**
 	 * Fill the placeholders in the template string with properties from
 	 * the supplied data object.
@@ -127,13 +131,9 @@ class InlineCompleteTinyMCEAction extends WireData implements Module {
 		}, $tpl);
 	}
 	
-	
-
-
-	
 	/**
 	 * Configurable settings. These inputfields will be added to each
-	 * CKEditor field's input settings.
+	 * TinyMCE field's input settings.
 	 */
 	public function ___getSettingsFields($field, $prefix) {
 		$wrap = new InputfieldWrapper();

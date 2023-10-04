@@ -24,7 +24,7 @@ class ProcessInlineCompleteTinyMCE extends Process implements ConfigurableModule
 		return [
 			"title"			=>	"Autocomplete for TinyMCE",
 			"summary"		=>	"Allow quick insertion of PW items inside TinyMCE",
-			"version"		=>	"0.0.4",
+			"version"		=>	"0.0.5",
 			"autoload"		=>	function() {
 				$p = wire('page');
 				if(! $p->template == "admin") return false;
@@ -148,17 +148,30 @@ class ProcessInlineCompleteTinyMCE extends Process implements ConfigurableModule
 				}
 			}
 			
-			$tbl->row([
-				$actionTitle,
-				$action->getTrigger(),
-				implode(', ', $usedIn)
-			]);
+			$trigger = $action->getTrigger();
+			
+			if(is_array($trigger)) {
+				foreach($trigger as $chars) {
+					$tbl->row([
+						$actionTitle,
+						$chars,
+						implode(', ', $usedIn)
+					]);
+				}
+			} else {
+				$tbl->row([
+					$actionTitle,
+					$trigger,
+					implode(', ', $usedIn)
+				]);
+			}
 		}
 		
 		$hdr = '<h3>' . $this->_("Available Actions:") . '</h3>';
-		
 		return $hdr . $tbl->render();
+
 	}
+	
 	
 	protected function executeAjax() {
 		
@@ -268,6 +281,7 @@ class ProcessInlineCompleteTinyMCE extends Process implements ConfigurableModule
 			
 			$conf = $action->getActionSettings();
 			$conf["action"] = $action->name;
+			$conf["language"] = $this->user->language->id;
 
 			foreach($field->getArray() as $prop => $val) {
 				if(strpos($prop, $prefix) === 0) {
@@ -303,7 +317,7 @@ class ProcessInlineCompleteTinyMCE extends Process implements ConfigurableModule
 
 
 	/**
-	 * All actions register themselves by hooking into this method
+	 * All actions register themselves by hooking after this method
 	 * and adding themselves to the returned array
 	 */
 	public function ___registerActions() {

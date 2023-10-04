@@ -21,7 +21,7 @@ class InlineCompleteTinyMCEActionPages extends InlineCompleteTinyMCEAction {
 		return array(
 			"title"		=>	"Autocomplete for Pages",
 			"summary"	=>	"Add action for pages matching selector to Autocomplete for TinyMCE",
-			"version"	=>	"0.0.4",
+			"version"	=>	"0.0.5",
 			"autoload"	=>	function() {
 				$p = wire('page');
 				if($p->template != "admin") return false;
@@ -48,6 +48,11 @@ class InlineCompleteTinyMCEActionPages extends InlineCompleteTinyMCEAction {
 	public function executeFilter($options) {
 
 		$ret = [];
+
+		$curLang = $this->user->language;
+		$reqLang = $options->language;
+		if($reqLang !== $curLang->id)
+			$this->user->language = $this->languages->get($reqLang);
 
 		$selector = str_replace('{filter}', $this->sanitizer->selectorValue($options->filter), $this->selector);
 		
@@ -83,6 +88,8 @@ class InlineCompleteTinyMCEActionPages extends InlineCompleteTinyMCEAction {
 			}
 
 		}
+		
+		$this->user->language = $curLang;
 		
 		return $ret;
 	}
