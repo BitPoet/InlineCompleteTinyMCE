@@ -1,1 +1,2 @@
+# Set language for .module files to PHP
 *.module linguist-language=PHP
